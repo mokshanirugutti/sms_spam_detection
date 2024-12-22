@@ -68,23 +68,70 @@ def predict_message():
         print(f"Message: {user_input}")
         print(f"Classification: {prediction}")
         print("=======================================\n")
+        
+def predict_pile_messages():
+    """Classify a batch of messages from a file as spam or not."""
+    if not (os.path.exists('spam_classifier_model.pkl') and os.path.exists('vectorizer.pkl')):
+        print("Model or Vectorizer not found. Training a new model...")
+        train_model()
 
+    model = joblib.load('spam_classifier_model.pkl')
+    vectorizer = joblib.load('vectorizer.pkl')
+
+    file_path = input("\nEnter the path to the file containing messages (e.g., .csv): ")
+    if not os.path.exists(file_path):
+        print("File not found. Please check the path and try again.")
+        return
+
+    try:
+        # Read the file
+        messages = pd.read_csv(file_path, header=None, names=['Message'],sep=',',engine='python')
+        print(f"\nLoaded {len(messages)} messages from the file.")
+        # print(messages.head())
+        
+        # Check for empty messages
+        messages['Message'] = messages['Message'].astype(str).str.strip()
+        messages = messages[messages['Message'] != '']
+        # print(messages.head())
+
+        if messages.empty:
+            print("The file contains no valid messages. Please check the content.")
+            return
+
+        # Transform and predict
+        transformed_messages = vectorizer.transform(messages['Message'])
+        predictions = model.predict(transformed_messages)
+
+        # Add predictions to the DataFrame
+        messages['Classification'] = predictions
+
+        # Save results to a file
+        output_path = "classified_messages.csv"
+        messages.to_csv(output_path, index=False)
+        print(f"\nClassification completed! Results saved to '{output_path}'.")
+    except Exception as e:
+        print(f"\nAn error occurred while processing the file: {e}")
+
+    
 if __name__ == "__main__":
     print("Welcome to SMS Spam Detection Application")
     print("-------------------------------------------")
     print("Options:")
     print("1. Train Model")
-    print("2. Predict Message")
-    print("3. Exit")
+    print("2. Predict Single Message")
+    print("3. Predict Pile of Messages")
+    print("4. Exit")
 
     while True:
-        choice = input("\nEnter your choice (1/2/3): ")
+        choice = input("\nEnter your choice (1/2/3/4): ")
 
         if choice == '1':
             train_model()
         elif choice == '2':
             predict_message()
         elif choice == '3':
+            predict_pile_messages()
+        elif choice == '4':
             print("Exiting application!")
             break
         else:
