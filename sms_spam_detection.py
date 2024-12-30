@@ -10,9 +10,11 @@ from sklearn import metrics
 
 def load_dataset():
     """Load the SMS Spam Collection Dataset."""
-    dataset_path = "SMSSpamCollection"  # Local path to the dataset
-    dataset = pd.read_csv(dataset_path, sep='\t', header=None, names=['Label', 'Message'])
+    dataset_path = "customCollection.csv"  # Local path to the dataset
+    dataset = pd.read_csv(dataset_path, sep='|', header=None, names=['Label', 'Message'],engine='python')
     dataset['Label'] = dataset['Label'].map({'ham': 'Not Spam', 'spam': 'Spam'})
+    dataset['Message'] = dataset['Message'].fillna('') 
+    print(dataset.head())
     return dataset
 
 def train_model():
