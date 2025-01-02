@@ -127,13 +127,23 @@ weighted avg       0.98      0.98      0.98      1672
 
 #### Predicting a Message
 ```plaintext
-Enter your choice (1/2/3): 2
-Enter a message to classify (or type 'exit' to quit): Where are you now?
+Welcome to SMS Spam Detection Application
+-------------------------------------------
+Options:
+1. Train Model
+2. Predict Single Message
+3. Predict Pile of Messages
+4. Exit
+
+Enter your choice (1/2/3/4): 2
+Enter a message to classify (or type 'exit' to quit): win a phone
 
 ================ Result ================
-Message: Where are you now?
-Classification: Not Spam
+Message: win a phone
+Classification: Spam
 =======================================
+
+Enter a message to classify (or type 'exit' to quit):
 ```
 
 ## Improvements and Future Training
